@@ -13,36 +13,36 @@ function Flow() {
 
 
   const initialNodes = [
-    {
-      id: 'node-1',
-      type: 'featureSelection',
-      data: { label: 'Feature Selection' },
-      position: { x: 250, y: 5 },
-    },
-    {
-        id: 'node-2',
-        type: 'dataSet',
-        data: { label: 'Dataset' },
-        position: { x: 450, y: 25 },
-    },
-    {
-      id: 'node-3',
-      type: 'normalization',
-      data: { label: 'Normalization' },
-      position: { x: 750, y: 45 },
-    },
-    {
-      id: 'node-4',
-      type: 'dataImputation',
-      data: { label: 'Data Imputation' },
-      position: { x: 950, y: 195 },
-    },
-    {
-      id: 'node-5',
-      type: 'modelTraining',
-      data: { label: 'Model Training' },
-      position: { x: 1550, y: 500 },
-    }
+    // {
+    //   id: 'node-1',
+    //   type: 'featureSelection',
+    //   data: { label: 'Feature Selection' },
+    //   position: { x: 250, y: 5 },
+    // },
+    // {
+    //     id: 'node-2',
+    //     type: 'dataSet',
+    //     data: { label: 'Dataset' },
+    //     position: { x: 450, y: 25 },
+    // },
+    // {
+    //   id: 'node-3',
+    //   type: 'normalization',
+    //   data: { label: 'Normalization' },
+    //   position: { x: 750, y: 45 },
+    // },
+    // {
+    //   id: 'node-4',
+    //   type: 'dataImputation',
+    //   data: { label: 'Data Imputation' },
+    //   position: { x: 950, y: 195 },
+    // },
+    // {
+    //   id: 'node-5',
+    //   type: 'modelTraining',
+    //   data: { label: 'Model Training' },
+    //   position: { x: 1550, y: 500 },
+    // }
 
   ];
   const initialEdges = [  {

@@ -1,0 +1,39 @@
+.back-btn{
+    text-align: left;
+    font-size: 1.9rem;
+}
+
+.back-btn:hover{
+    cursor: pointer;
+}
+
+.data-set-info-section{
+    text-align: left;
+    padding:10px;
+    margin-top:20px;
+    border-top: 2px solid #fff;
+}
+
+.about-dataset-text{
+    padding:10px;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+.keywords-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+}
+
+.keywords-bubble{
+    padding:6px;
+    margin-right: 10px;
+    border:2px solid #fff;
+    border-radius: 30px;
+}
+
+.dataset-info-toolbox{
+    display:  flex;
+    flex-direction: row;
+    justify-content: space-around;
+}

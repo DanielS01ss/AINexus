@@ -20,6 +20,9 @@ import StorageIcon from '@mui/icons-material/Storage';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import WidgetsIcon from '@mui/icons-material/Widgets';
+import DataSelectDialog from './dialogs/DataSelectDialog/DataSelectDialog';
+import PreProcessingAlgDialog from './dialogs/PreProcessingAlgDialog/PreProcessingAlgDialog';
+import AIModels from './dialogs/AIModels/AIModels';
 
 const drawerWidth = 240;
 
@@ -49,7 +52,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -93,6 +95,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [selectDataDialog, setSelectDataDialog] = React.useState(false);
+  const [preProcessingAlgDialogOpen, setPreProcessingAlgDialogOpen] = React.useState(false);
+  const [displayMLModels, setDisplayMLModels] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -101,6 +106,22 @@ export default function MiniDrawer() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const handleClick = () => {
+    setSelectDataDialog(true);
+  }
+
+  const handleDataSelectDialogClose = ()=>{
+    setSelectDataDialog(false);
+  }
+
+  const handlePreprocessingAlgDialogClose = ()=>{
+      setPreProcessingAlgDialogOpen(false);
+  }
+
+  const handleDisplayMLModels = () =>{
+    setDisplayMLModels(false);
+  }
 
   return (
     <Box sx={{ display: 'flex' , width:"20px !important"}}>
@@ -145,6 +166,8 @@ export default function MiniDrawer() {
                     px: 2.5,
                     color:"white"
                   }}
+                  key={0}
+                  onClick={()=>{ handleClick();}}
                 >
                   <ListItemIcon
                     sx={{
@@ -161,7 +184,7 @@ export default function MiniDrawer() {
              
             </ListItem>
 
-            <ListItem key={"Data pre-processing"} disablePadding sx={{ display: 'block' }}>
+            <ListItem key={"Data pre-processing"} disablePadding sx={{ display: 'block' }} onClick={()=>{setPreProcessingAlgDialogOpen(true)}}>
               <ListItemButton
                   sx={{
                     minHeight: 48,
@@ -169,6 +192,7 @@ export default function MiniDrawer() {
                     px: 2.5,
                     color:"white"
                   }}
+                  key={1}
                 >
                   <ListItemIcon
                     sx={{
@@ -183,7 +207,7 @@ export default function MiniDrawer() {
                   <ListItemText primary={"Data pre-processing"} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
             </ListItem>
-            <ListItem key={"AI Models"} disablePadding sx={{ display: 'block' }}>
+            <ListItem key={"AI Models"} disablePadding sx={{ display: 'block' }} onClick={()=>{setDisplayMLModels(true);}}>
               <ListItemButton
                   sx={{
                     minHeight: 48,
@@ -191,6 +215,7 @@ export default function MiniDrawer() {
                     px: 2.5,
                     color:"white"
                   }}
+                  key={2}
                 >
                   <ListItemIcon
                     sx={{
@@ -216,6 +241,7 @@ export default function MiniDrawer() {
                     px: 2.5,
                     color:"white"
                   }}
+                  key={4}
                 >
                   <ListItemIcon
                     sx={{
@@ -233,9 +259,10 @@ export default function MiniDrawer() {
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        
-        
       </Box>
+     {selectDataDialog && <DataSelectDialog  open={selectDataDialog} handleClose={handleDataSelectDialogClose} />}
+     {preProcessingAlgDialogOpen && <PreProcessingAlgDialog open={preProcessingAlgDialogOpen} handleClose={handlePreprocessingAlgDialogClose} />}
+     {displayMLModels && <AIModels open={displayMLModels} handleClose={handleDisplayMLModels} />}
     </Box>
   );
 }
