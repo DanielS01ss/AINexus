@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -17,6 +17,7 @@ import { faSquareRootVariable } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Typography } from '@mui/material';
 import PreProcessingDialogInfo from "../PreProcessingDialogInfo/PreProcessingDialogInfo";
+import { useEdges } from "reactflow";
 
 
 export default function PreProcessingAlgDialog (props) {
@@ -25,6 +26,13 @@ export default function PreProcessingAlgDialog (props) {
     const [dataSetSearch,setDatasetSearch] = React.useState(true);
     const [infoDialogOpen, setInfoDialogOpen] = React.useState()
     const [displayMoreInfo, setDisplayMoreInfo] = React.useState(false);
+    const [algSelectedId, setAlgSelectedId] = React.useState(1);
+
+    useEffect(()=>{
+      console.log(props);
+      setAlgSelectedId();
+    },{})
+
 
     const handleDisplayDataSetInfo = () =>{
       setDatasetSearch(!dataSetSearch);
@@ -104,7 +112,7 @@ export default function PreProcessingAlgDialog (props) {
                              checked={checked.indexOf(value) !== -1}
                              inputProps={{ 'aria-labelledby': labelId }}
                            />
-                           <Button variant="outlined" onClick={()=>{setDisplayMoreInfo(true)}}>Info</Button>
+                           <Button variant="outlined" onClick={()=>{setDisplayMoreInfo(true); setAlgSelectedId(1)}}>Info</Button>
                          </div>
                        }
                        disablePadding
@@ -133,7 +141,7 @@ export default function PreProcessingAlgDialog (props) {
                              checked={checked.indexOf(value) !== -1}
                              inputProps={{ 'aria-labelledby': labelId }}
                            />
-                           <Button variant="outlined" onClick={()=>{setDisplayMoreInfo(true)}}>Info</Button>
+                           <Button variant="outlined" onClick={()=>{setDisplayMoreInfo(true); setAlgSelectedId(2)}}>Info</Button>
                          </div>
                        }
                        disablePadding
@@ -162,7 +170,7 @@ export default function PreProcessingAlgDialog (props) {
                                checked={checked.indexOf(value) !== -1}
                                inputProps={{ 'aria-labelledby': labelId }}
                              />
-                             <Button variant="outlined" onClick={()=>{setDisplayMoreInfo(true)}}>Info</Button>
+                             <Button variant="outlined" onClick={()=>{setDisplayMoreInfo(true);  setAlgSelectedId(3)}}>Info</Button>
                            </div>
                          }
                          disablePadding
@@ -186,7 +194,7 @@ export default function PreProcessingAlgDialog (props) {
               }
               {
                 displayMoreInfo &&
-                <PreProcessingDialogInfo handleClose={handleDisplayAlgInfo}/>
+                <PreProcessingDialogInfo handleClose={handleDisplayAlgInfo} algSelectedId={algSelectedId}/>
               }
                  
             </DialogContent>

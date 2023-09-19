@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -17,15 +17,22 @@ import { faSquareRootVariable } from '@fortawesome/free-solid-svg-icons';
 import { faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Typography } from '@mui/material';
+import AIModelsInfo from "../AIModelsInfo/AIModelsInfo";
 
 
 export default function AIModels (props) {
 
     const [checked, setChecked] = React.useState([1]);
     const [dataSetSearch,setDatasetSearch] = React.useState(true);
-  
+    const [AIModelInfo, setAIModelInfo] = React.useState(false);
+    const [AIModelId, setAIModelId] = useState(1);
+
     const handleDisplayDataSetInfo = () =>{
       setDatasetSearch(!dataSetSearch);
+    }
+
+    const handleClose = ()=>{  
+        setAIModelInfo(false);
     }
   
     const handleToggle = (value) => () => {
@@ -58,9 +65,11 @@ export default function AIModels (props) {
     <ThemeProvider theme={darkTheme}>
       <Dialog open={props.open} onClose={props.handleClose} sx={{textAlign:"center", backgroundColor:""}} maxWidth="600" fullWidth="true" >
            <DialogTitle> ML Models </DialogTitle>
+          
+           
             <DialogContent>   
               
-              
+            {!AIModelInfo && 
                    <List dense sx={{ width: '100%', bgcolor: 'background.paper', marginTop:"10px" }}>
                    {allAlgorithms.map((value,index) => {
                      const labelId = `checkbox-list-secondary-label-${value}`;
@@ -99,7 +108,7 @@ export default function AIModels (props) {
                                 checked={checked.indexOf(value) !== -1}
                                 inputProps={{ 'aria-labelledby': labelId }}
                               />
-                              <Button variant="outlined" onClick={()=>{handleDisplayDataSetInfo()}}>Info</Button>
+                              <Button variant="outlined" onClick={()=>{setAIModelInfo(true); setAIModelId(index)}}>Info</Button>
                             </div>
                           }
                           disablePadding
@@ -119,15 +128,17 @@ export default function AIModels (props) {
                      } 
                    })}
                  </List>
-            
-            
-
+             }
+              { AIModelInfo && <AIModelsInfo handleClose={handleClose} selectedModelId = {AIModelId} />}
+          
             </DialogContent>
+             
             <DialogActions>
               <Button onClick={props.handleClose}>Close</Button>
               <Button onClick={props.handleClose}>Apply</Button>
             </DialogActions>
-          
+
+           
       </Dialog>
       </ThemeProvider>
     </div>

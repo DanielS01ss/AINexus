@@ -26,14 +26,41 @@ import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import style from "./DataSelectDialog.css";
 import DataSetInfo from './DataSetInfo';
+import axios from 'axios';
 
 export default function DataSelectDialog(props) {
   
 
   const [checked, setChecked] = React.useState([1]);
   const [dataSetSearch,setDatasetSearch] = React.useState(true);
+  const [fetchedData, setFetchedData] = React.useState([]);
+  const [isDataLoading, setIsDataLoading] = React.useState(true);
+  const [datasetIdSelected, setDatasetIdSelected] = React.useState();
+  const [selectedDataSetName, setSelectedDatasetName] = React.useState('');
 
-  const handleDisplayDataSetInfo = () =>{
+  const fetchAllData = () => {
+    axios.get('http://localhost:8089/api/dataset/all-datasets').then((resp)=>{
+      setFetchedData(resp.data);
+      setIsDataLoading(false);
+      
+    }).catch((err)=>{
+      setIsDataLoading(false);
+    });
+    
+  }
+
+
+  React.useEffect(()=>{
+    if(datasetIdSelected){
+      handleDisplayDataSetInfo();
+    }
+  },[datasetIdSelected])
+
+  React.useEffect(()=>{
+    fetchAllData();
+  },[])
+
+  const handleDisplayDataSetInfo = (infoId) =>{
     setDatasetSearch(!dataSetSearch);
   }
 
@@ -67,8 +94,17 @@ export default function DataSelectDialog(props) {
 
            <DialogTitle> Datasets </DialogTitle>
             <DialogContent>   
+
+      {isDataLoading &&
+        <div>
+            <div className="spinner"></div>
+            <p className='loading-text'>Loading...</p>
+          </div> 
+      }
+          
+            
              {
-                dataSetSearch &&
+                (dataSetSearch && !isDataLoading) &&
                 <Paper
                   component="form"
                   sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: "100%" }}
@@ -89,15 +125,10 @@ export default function DataSelectDialog(props) {
               
               } 
               {
-                dataSetSearch &&
+                (dataSetSearch && !isDataLoading) &&
                    <List dense sx={{ width: '100%', bgcolor: 'background.paper', marginTop:"10px" }}>
-                   {[0, 1, 2, 3,4,5,6,7,8,9,10,11,12,13].map((value,index) => {
-                     const labelId = `checkbox-list-secondary-label-${value}`;
-                    
-                     if(index == 0){
-                      return(
-                        <ListItem
-                        key={value}
+                      <ListItem
+                        key={'first'}
                         secondaryAction={
                           <div className='dataset-select-toolbox'>
                             <p>Select</p>
@@ -112,15 +143,17 @@ export default function DataSelectDialog(props) {
                       >
                         <ListItemButton>
                           
-                          <ListItemText  id={labelId}  disableTypography
+                          <ListItemText  id={'unique'}  disableTypography
                           primary={<Typography variant="body2" style={{ color: '#FFFFFF',fontSize:"1.3rem" }}>DataSet Name</Typography>} />
                         </ListItemButton>
                       </ListItem>
-                      );
-                     } else {
+                   {fetchedData.map((value,index) => {
+                     const labelId = `checkbox-list-secondary-label-${value}`;
+                    
+                     
                       return (
                         <ListItem
-                          key={value}
+                          key={index}
                           secondaryAction={
                             <div className='dataset-select-toolbox'>
                               <Checkbox
@@ -129,7 +162,7 @@ export default function DataSelectDialog(props) {
                                 checked={checked.indexOf(value) !== -1}
                                 inputProps={{ 'aria-labelledby': labelId }}
                               />
-                              <Button variant="outlined" onClick={()=>{handleDisplayDataSetInfo()}}>Info</Button>
+                              <Button variant="outlined" onClick={()=>{ setDatasetIdSelected(value.id); setSelectedDatasetName(value.dataset_name); }}>Info</Button>
                             </div>
                           }
                           disablePadding
@@ -139,11 +172,11 @@ export default function DataSelectDialog(props) {
                               <p className='select-dialog-list'><FontAwesomeIcon icon={faDatabase}/></p> 
                             </ListItemAvatar>
                             <ListItemText  id={labelId}  disableTypography
-                            primary={<Typography variant="body2" style={{ color: '#FFFFFF',fontSize:"1.3rem" }}>Database Name</Typography>} />
+                            primary={<Typography variant="body2" style={{ color: '#FFFFFF',fontSize:"1.3rem" }}>{value.dataset_name}</Typography>} />
                           </ListItemButton>
                         </ListItem>
                       );
-                     }
+                     
                     
                    })}
                  </List>
@@ -151,7 +184,7 @@ export default function DataSelectDialog(props) {
 
               {
                 !dataSetSearch &&
-                <DataSetInfo handleDisplayDataSetInfo={handleDisplayDataSetInfo}/>
+                <DataSetInfo handleDisplayDataSetInfo={handleDisplayDataSetInfo} selectedDataSetName={selectedDataSetName} datasetId={datasetIdSelected}/>
               }
 
             </DialogContent>

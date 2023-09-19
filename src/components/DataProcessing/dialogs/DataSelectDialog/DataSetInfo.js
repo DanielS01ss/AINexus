@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import styles from "./DataSetInfo.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {  faAnglesLeft } from '@fortawesome/free-solid-svg-icons';
@@ -12,9 +12,21 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { Button } from "@mui/material";
+import axios from 'axios';
 
 export default function DataSetInfo (props){
 
+
+  function capitalizeFirstLetter(str) {
+
+    if (!str) {
+      return str;
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+
+    const [isDataLoading, setIsDataLoading] = useState(true);
     const columns = [
         { id: 'name', label: 'Name', minWidth: 170 },
         { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
@@ -41,6 +53,85 @@ export default function DataSetInfo (props){
         },
       ];
 
+      const [tableColumns, setTableColumns] = useState([]);
+      const [response, setResponse] = useState({});
+      const [datasetInfo, setDatasetInfo] = useState({});
+      
+      useEffect(()=>{
+        if(response.data){
+          parseAndSetRows(response.data);
+        }
+        
+        
+      },[tableColumns])
+
+      const parseAndSetColumns = (data)=>{
+          const oneObject = Object.keys(data[0]);
+          const result = [];
+          for(let objKey of oneObject){
+            objKey = capitalizeFirstLetter(objKey);
+              const oneObj = {
+                id:objKey,
+                label:objKey,
+                minWidth:130,
+                align:'right',
+                format:(value) => value
+              }
+              result.push(oneObj);
+          }
+          setTableColumns(result);
+          
+      }
+
+      const [rows, setRows] = useState([]);
+
+   
+
+      const parseAndSetRows = (data)=>{
+        
+        const array_res = [];
+        for(let elem of data ){
+          
+          const result = Object.values(elem);
+          const obj = {};
+          const newObj = tableColumns.map((column,i)=>{
+            
+            obj[column.id] = result[i];
+            return {};
+          })
+          
+          array_res.push(obj);
+        }
+        console.log(array_res);
+        setRows(array_res);
+      }
+
+
+      const fetchedDataForDataSet = ()=>{
+
+        axios.get(`http://localhost:8089/api/dataset/dataset-info?id=${props.datasetId}`).then((resp)=>{
+          setDatasetInfo(resp.data);
+          setIsDataLoading(false);
+        }).catch((err)=>{
+          console.log(err);
+          setIsDataLoading(false);
+        });
+
+        axios.get(`http://localhost:8089/api/dataset/fetch-snippet?id=${props.datasetId}`).then((resp)=>{
+          setResponse(resp);
+          parseAndSetColumns(resp.data);
+          setIsDataLoading(false);
+         
+        }).catch((err)=>{
+          console.log(err);
+          setIsDataLoading(false);
+        })
+      }
+
+      useEffect(()=>{
+        fetchedDataForDataSet();
+      },[]);
+
       function createData(
         name,
         code,
@@ -52,23 +143,24 @@ export default function DataSetInfo (props){
       }
 
       
-    const rows = [
-        createData('India', 'IN', 1324171354, 3287263),
-        createData('China', 'CN', 1403500365, 9596961),
-        createData('Italy', 'IT', 60483973, 301340),
-        createData('United States', 'US', 327167434, 9833520),
-        createData('Canada', 'CA', 37602103, 9984670),
-        createData('Australia', 'AU', 25475400, 7692024),
-        createData('Germany', 'DE', 83019200, 357578),
-        createData('Ireland', 'IE', 4857000, 70273),
-        createData('Mexico', 'MX', 126577691, 1972550),
-        createData('Japan', 'JP', 126317000, 377973),
-        createData('France', 'FR', 67022000, 640679),
-        createData('United Kingdom', 'GB', 67545757, 242495),
-        createData('Russia', 'RU', 146793744, 17098246),
-        createData('Nigeria', 'NG', 200962417, 923768),
-        createData('Brazil', 'BR', 210147125, 8515767),
-    ];
+    // const rows = [
+    //     createData('India', 'IN', 1324171354, 3287263),
+    //     createData('China', 'CN', 1403500365, 9596961),
+    //     createData('Italy', 'IT', 60483973, 301340),
+    //     createData('United States', 'US', 327167434, 9833520),
+    //     createData('Canada', 'CA', 37602103, 9984670),
+    //     createData('Australia', 'AU', 25475400, 7692024),
+    //     createData('Germany', 'DE', 83019200, 357578),
+    //     createData('Ireland', 'IE', 4857000, 70273),
+    //     createData('Mexico', 'MX', 126577691, 1972550),
+    //     createData('Japan', 'JP', 126317000, 377973),
+    //     createData('France', 'FR', 67022000, 640679),
+    //     createData('United Kingdom', 'GB', 67545757, 242495),
+    //     createData('Russia', 'RU', 146793744, 17098246),
+    //     createData('Nigeria', 'NG', 200962417, 923768),
+    //     createData('Brazil', 'BR', 210147125, 8515767),
+    // ];
+    
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -86,25 +178,26 @@ export default function DataSetInfo (props){
     return(
         <div>
             <p className="back-btn" onClick={()=>{props.handleDisplayDataSetInfo();}}><FontAwesomeIcon icon={faAnglesLeft}/></p>
-            <h1>Dataset Name</h1>
-            <div className="data-set-info-section">
+            <h1>{props.selectedDataSetName} </h1>
+            {isDataLoading && <div>
+            <div className="spinner"></div>
+            <p className='loading-text'>Loading...</p>
+          </div> }
+            { !isDataLoading && <div className="data-set-info-section">
                 <p className="about-dataset-text">About Dataset</p>
-                <p> &nbsp; &nbsp;  There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
+                <p> &nbsp; &nbsp;  {datasetInfo.about}</p>
                 <p className="about-dataset-text">Authors</p>
-                <p> &nbsp; &nbsp;  There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</p>
+                {datasetInfo.authors && datasetInfo.authors.map((vl)=><div>{vl}</div>)}                
                 <p className="about-dataset-text">Keywords</p>
                 <div className="keywords-container">
-                    <div className="keywords-bubble">Cancer</div>
-                    <div className="keywords-bubble">Heart</div>
-                    <div className="keywords-bubble">Disease</div>
-                    <div className="keywords-bubble">Old Age</div>
+                {datasetInfo.keywords && datasetInfo.keywords.map((vl)=><div className="keywords-bubble">{vl}</div>)} 
                 </div>
                 <Paper sx={{ width: '100%',marginTop:"30px", overflow: 'hidden' }}>
                     <TableContainer sx={{ maxHeight: 940 }}>
                         <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
-                            {columns.map((column) => (
+                            {tableColumns.map((column) => (
                                 <TableCell
                                 key={column.id}
                                 align={column.align}
@@ -121,10 +214,11 @@ export default function DataSetInfo (props){
                             .map((row) => {
                                 return (
                                 <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                                    {columns.map((column) => {
+                                    {tableColumns.map((column,i) => {
                                     const value = row[column.id];
+                                   
                                     return (
-                                        <TableCell key={column.id} align={column.align}>
+                                        <TableCell key={i} align={column.align}>
                                         {column.format && typeof value === 'number'
                                             ? column.format(value)
                                             : value}
@@ -152,6 +246,7 @@ export default function DataSetInfo (props){
                     <Button variant="contained" sx={{marginTop:"40px"}}>Donwload CSV</Button>
                  </div>
             </div>
+                }
         </div>
     );
 
