@@ -30,23 +30,27 @@ export default function PreProcessingAlgDialog (props) {
     const [firstCheckBox,setFirstCheckBox] = React.useState(false);
     const [secondCheckBox,setSecondCheckBox] = React.useState(false);
     const [thirdCheckBox, setThirdCheckBox] = React.useState(false);
+    const [preProcessingAlgo, setPreProcessingAlgo] = React.useState([]);
+
 
     const restorePreferences = ()=>{
-      const storedPref = localStorage.getItem('preProcessing');
-      if(storedPref == 1){
+      const storedPref = JSON.parse(localStorage.getItem('pre-processing-preferences'));
+      if(storedPref == null){
+        return;
+      }
+      setPreProcessingAlgo(storedPref);
+      if(storedPref.includes("Data featuring")){
         setFirstCheckBox(true);
-        setSecondCheckBox(false);
-        setThirdCheckBox(false);
-      } else  if(storedPref == 2){
-        setFirstCheckBox(false);
+      }
+       if(storedPref.includes("Normalization")){
         setSecondCheckBox(true);
-        setThirdCheckBox(false);
-      } else  if(storedPref == 3){
-        setFirstCheckBox(false);
-        setSecondCheckBox(false);
+      }
+       if (storedPref.includes("Data Imputation")){
         setThirdCheckBox(true);
       }
     }
+
+    
 
     useEffect(()=>{
       setAlgSelectedId();
@@ -61,24 +65,39 @@ export default function PreProcessingAlgDialog (props) {
     const handleDisplayAlgInfo = ()=>{
       setDisplayMoreInfo(false);
     }
+
+    const updateProcessingAlgoArray = (arr)=>{
+        return arr
+    }
   
     const handleToggle = (value) => () => {
+      let processingAlgoArray = preProcessingAlgo;
+      
       if(value == 1){
-        localStorage.setItem('preProcessing',1);
-        setFirstCheckBox(true);
-        setSecondCheckBox(false);
-        setThirdCheckBox(false);
+        if(processingAlgoArray.includes("Data featuring")){
+          processingAlgoArray = processingAlgoArray.filter(elem => elem !== "Data featuring");
+        } else {
+          processingAlgoArray.push("Data featuring");
+        }
+        setFirstCheckBox(!firstCheckBox);
       } else if(value == 2){
-        localStorage.setItem('preProcessing',2);
-        setFirstCheckBox(false);
-        setSecondCheckBox(true);
-        setThirdCheckBox(false);
+        if(processingAlgoArray.includes("Normalization")){
+          processingAlgoArray = processingAlgoArray.filter(elem => elem !== "Normalization");
+        } else {
+          processingAlgoArray.push("Normalization");
+        }
+        setSecondCheckBox(!secondCheckBox);
       } else if(value == 3) {
-        localStorage.setItem('preProcessing',3);
-        setFirstCheckBox(false);
-        setSecondCheckBox(false);
-        setThirdCheckBox(true);
+        if(processingAlgoArray.includes("Data Imputation")){
+          processingAlgoArray = processingAlgoArray.filter(elem => elem !== "Data Imputation");
+        } else {
+          processingAlgoArray.push("Data Imputation");
+        }
+        setThirdCheckBox(!thirdCheckBox);
       }
+      localStorage.setItem("pre-processing-preferences",JSON.stringify(processingAlgoArray));
+      setPreProcessingAlgo(processingAlgoArray);
+
     };
   
    
@@ -226,7 +245,7 @@ export default function PreProcessingAlgDialog (props) {
             </DialogContent>
             <DialogActions>
               <Button onClick={props.handleClose}>Close</Button>
-              <Button onClick={props.handleClose}>Apply</Button>
+              <Button onClick={()=>{props.handleClose();  props.selectPreProcessingAlgo(preProcessingAlgo)}}>Apply</Button>
             </DialogActions>
           
       </Dialog>

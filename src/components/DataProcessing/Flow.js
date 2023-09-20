@@ -74,8 +74,86 @@ function Flow(props) {
             id: 'node-2',
             type: 'dataSet',
             data: { label: 'Dataset' },
-            position: { x: 450, y: 25 },
+            position: { x: 250, y: 150 },
            },
+        ];
+      });
+    }
+  
+  };
+
+  const addNodeNormalization = () => {
+    
+    let found = false;
+    for(let node of initialNodes){
+      if(node.id == 'node-3'){
+        found = true;
+      }
+    }
+
+    if(!found){
+      setInitialNodes((nodes) => {
+      
+        return [
+          ...nodes,
+          {
+            id: 'node-3',
+            type: 'normalization',
+            data: { label: 'Normalization' },
+            position: { x: 1450, y: 100 },
+          }
+        ];
+      });
+    }
+  
+  };
+
+  const addNodeDataFeaturing = () => {
+    
+    let found = false;
+    for(let node of initialNodes){
+      if(node.id == 'node-1'){
+        found = true;
+      }
+    }
+
+    if(!found){
+      setInitialNodes((nodes) => {
+      
+        return [
+          ...nodes,
+          {
+              id: 'node-1',
+              type: 'featureSelection',
+              data: { label: 'Feature Selection' },
+              position: { x: 750, y: 100 },
+          },
+        ];
+      });
+    }
+  
+  };
+
+  const addNodeImputation = () => {
+    
+    let found = false;
+    for(let node of initialNodes){
+      if(node.id == 'node-4'){
+        found = true;
+      }
+    }
+
+    if(!found){
+      setInitialNodes((nodes) => {
+      
+        return [
+          ...nodes,
+          {
+            id: 'node-4',
+            type: 'dataImputation',
+            data: { label: 'Data Imputation' },
+            position: { x: 2150, y: 110 },
+          },
         ];
       });
     }
@@ -89,6 +167,21 @@ function Flow(props) {
     }
   },[props.selectedData])
 
+  React.useEffect(()=>{
+    console.log("The pre processing algo is:")
+    console.log(props.selectedPreProcessingAlgo);
+    if(props.selectedPreProcessingAlgo){
+      for(let algo of props.selectedPreProcessingAlgo){
+        if(algo == "Normalization"){
+          addNodeNormalization();
+        } else if (algo == "Data featuring"){
+          addNodeDataFeaturing();
+        } else if (algo == "Data Imputation"){
+          addNodeImputation();
+        }
+      }
+    }
+  },[props.selectedPreProcessingAlgo])
 
   const appendNode = (nodeType) =>{
     let wasFound = false;

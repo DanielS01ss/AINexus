@@ -60,6 +60,10 @@ export default function DataSelectDialog(props) {
     const storedItem = localStorage.getItem('selectedDataId');
     setPreselectedOption(storedItem);
 
+    if(storedItem == null){
+      return;
+    }
+
     if(storedItem == '0'){
       setCheckBoxSelected(true); 
       setCheckBoxSelected1(false);

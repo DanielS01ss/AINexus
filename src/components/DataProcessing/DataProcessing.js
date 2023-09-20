@@ -10,6 +10,7 @@ function DataProcessing() {
   const circles = document.querySelectorAll(".circle"),
   progressBar = document.querySelector(".indicator");
   const [selectedData, setSelectedData] = React.useState({});
+  const [selectedPreProcessingAlgo, setSelectedPreProcessingAlgo] = React.useState("");
   let currentStep = 1;
   const updateSteps = () => {
     currentStep++;
@@ -28,6 +29,9 @@ function DataProcessing() {
 
   const selectDialog = (selectDialogData)=>{
      setSelectedData({...selectDialogData});
+  }
+  const selectPreProcessing = (data) =>{
+    setSelectedPreProcessingAlgo(data);
   }
   
     return (
@@ -49,8 +53,8 @@ function DataProcessing() {
                 </div>
               </div>
             </div>
-             <LeftMenu selectDialog={selectDialog} />
-             <Flow selectedData={selectedData}/> 
+             <LeftMenu selectDialog={selectDialog} selectedPreProcessing={selectPreProcessing} />
+             <Flow selectedPreProcessingAlgo={selectedPreProcessingAlgo} selectedData={selectedData}/> 
         </div>
       </div>
     );
