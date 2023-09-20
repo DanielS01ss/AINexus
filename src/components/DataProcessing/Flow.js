@@ -160,6 +160,33 @@ function Flow(props) {
   
   };
 
+
+  const addNodeMLModel = () => {
+    
+    let found = false;
+    for(let node of initialNodes){
+      if(node.id == 'node-5'){
+        found = true;
+      }
+    }
+
+    if(!found){
+      setInitialNodes((nodes) => {
+      
+        return [
+          ...nodes,
+          {
+            id: 'node-5',
+            type: 'modelTraining',
+            data: { label: 'Model Training' },
+            position: { x: 2750, y: 200 },
+         }
+        ];
+      });
+    }
+  
+  };
+
   React.useEffect(()=>{
     if(!checkIsEmpty(props.selectedData)){
       appendNode();
@@ -182,6 +209,13 @@ function Flow(props) {
       }
     }
   },[props.selectedPreProcessingAlgo])
+
+
+  React.useEffect(()=>{
+    if(props.selectedMLAlgo){
+      addNodeMLModel();
+    }
+  },[props.selectedMLAlgo])
 
   const appendNode = (nodeType) =>{
     let wasFound = false;

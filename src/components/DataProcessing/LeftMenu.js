@@ -131,6 +131,10 @@ export default function MiniDrawer(props) {
     props.selectedPreProcessing(data);
   }
 
+  const selectMLAlgo = (data) =>{
+    props.selectMLAlgo(data);
+  }
+
   React.useEffect(()=>{
     console.log(props);
   },[])
@@ -274,7 +278,7 @@ export default function MiniDrawer(props) {
       </Box>
      {selectDataDialog && <DataSelectDialog selectDialog={passData} open={selectDataDialog} handleClose={handleDataSelectDialogClose} />}
      {preProcessingAlgDialogOpen && <PreProcessingAlgDialog selectPreProcessingAlgo={selectPreProcessingAlgo} open={preProcessingAlgDialogOpen} handleClose={handlePreprocessingAlgDialogClose} />}
-     {displayMLModels && <AIModels open={displayMLModels} handleClose={handleDisplayMLModels} />}
+     {displayMLModels && <AIModels selectMLAlgo={selectMLAlgo} open={displayMLModels} handleClose={handleDisplayMLModels} />}
     </Box>
   );
 }

@@ -31,10 +31,18 @@ export default function AIModels (props) {
     const [thirdCheckBox, setThirdCheckBox] = React.useState(false);
     const [fourthCheckBox, setFourthCheckBox] = React.useState(false);
     const [selectedMLAlgo, setSelectedMLAlgo] = React.useState('');
+    
 
     const handleDisplayDataSetInfo = () =>{
       setDatasetSearch(!dataSetSearch);
     }
+
+
+    useEffect(()=>{
+      if(selectedMLAlgo){
+        props.selectMLAlgo(selectedMLAlgo);
+      }
+    },[selectedMLAlgo])
 
     const handleCheckedCheckBox = (index)=>{
       
@@ -104,21 +112,25 @@ export default function AIModels (props) {
       }
       
       if(storedOptions == '1'){
+        setSelectedMLAlgo("ResNet (Residual Neural Network)");
         setFirstCheckBox(true);
         setSecondCheckBox(false);
         setThirdCheckBox(false);
         setFourthCheckBox(false);
       } else if (storedOptions == '2'){
+        setSelectedMLAlgo("BERT (Bidirectional Encoder Representation from Transformers");
         setFirstCheckBox(false);
         setSecondCheckBox(true);
         setThirdCheckBox(false);
         setFourthCheckBox(false);
       } else if (storedOptions == '3'){
+        setSelectedMLAlgo("Random forest");
         setFirstCheckBox(false);
         setSecondCheckBox(false);
         setThirdCheckBox(true);
         setFourthCheckBox(false);
       } else if (storedOptions == '4') {
+        setSelectedMLAlgo("SVM Super Vector Machine");
         setFirstCheckBox(false);
         setSecondCheckBox(false);
         setThirdCheckBox(false);
