@@ -92,7 +92,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function MiniDrawer() {
+export default function MiniDrawer(props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [selectDataDialog, setSelectDataDialog] = React.useState(false);
@@ -122,6 +122,15 @@ export default function MiniDrawer() {
   const handleDisplayMLModels = () =>{
     setDisplayMLModels(false);
   }
+
+  const passData = (data)=>{
+    props.selectDialog(data);
+  }
+
+  
+  React.useEffect(()=>{
+    console.log(props);
+  },[])
 
   return (
     <Box sx={{ display: 'flex' , width:"20px !important"}}>
@@ -260,7 +269,7 @@ export default function MiniDrawer() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
       </Box>
-     {selectDataDialog && <DataSelectDialog  open={selectDataDialog} handleClose={handleDataSelectDialogClose} />}
+     {selectDataDialog && <DataSelectDialog selectDialog={passData} open={selectDataDialog} handleClose={handleDataSelectDialogClose} />}
      {preProcessingAlgDialogOpen && <PreProcessingAlgDialog open={preProcessingAlgDialogOpen} handleClose={handlePreprocessingAlgDialogClose} />}
      {displayMLModels && <AIModels open={displayMLModels} handleClose={handleDisplayMLModels} />}
     </Box>

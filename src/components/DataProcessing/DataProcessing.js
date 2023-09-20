@@ -9,7 +9,7 @@ function DataProcessing() {
 
   const circles = document.querySelectorAll(".circle"),
   progressBar = document.querySelector(".indicator");
-
+  const [selectedData, setSelectedData] = React.useState({});
   let currentStep = 1;
   const updateSteps = () => {
     currentStep++;
@@ -25,6 +25,10 @@ function DataProcessing() {
     
 
   },[]);
+
+  const selectDialog = (selectDialogData)=>{
+     setSelectedData({...selectDialogData});
+  }
   
     return (
       <div style={{ height: '100%' }}>        
@@ -45,8 +49,8 @@ function DataProcessing() {
                 </div>
               </div>
             </div>
-             <LeftMenu/>
-             <Flow/> 
+             <LeftMenu selectDialog={selectDialog} />
+             <Flow selectedData={selectedData}/> 
         </div>
       </div>
     );

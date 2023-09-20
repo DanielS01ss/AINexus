@@ -27,11 +27,31 @@ export default function PreProcessingAlgDialog (props) {
     const [infoDialogOpen, setInfoDialogOpen] = React.useState()
     const [displayMoreInfo, setDisplayMoreInfo] = React.useState(false);
     const [algSelectedId, setAlgSelectedId] = React.useState(1);
+    const [firstCheckBox,setFirstCheckBox] = React.useState(false);
+    const [secondCheckBox,setSecondCheckBox] = React.useState(false);
+    const [thirdCheckBox, setThirdCheckBox] = React.useState(false);
+
+    const restorePreferences = ()=>{
+      const storedPref = localStorage.getItem('preProcessing');
+      if(storedPref == 1){
+        setFirstCheckBox(true);
+        setSecondCheckBox(false);
+        setThirdCheckBox(false);
+      } else  if(storedPref == 2){
+        setFirstCheckBox(false);
+        setSecondCheckBox(true);
+        setThirdCheckBox(false);
+      } else  if(storedPref == 3){
+        setFirstCheckBox(false);
+        setSecondCheckBox(false);
+        setThirdCheckBox(true);
+      }
+    }
 
     useEffect(()=>{
-      console.log(props);
       setAlgSelectedId();
-    },{})
+      restorePreferences();
+    },[])
 
 
     const handleDisplayDataSetInfo = () =>{
@@ -43,16 +63,22 @@ export default function PreProcessingAlgDialog (props) {
     }
   
     const handleToggle = (value) => () => {
-      const currentIndex = checked.indexOf(value);
-      const newChecked = [...checked];
-  
-      if (currentIndex === -1) {
-        newChecked.push(value);
-      } else {
-        newChecked.splice(currentIndex, 1);
+      if(value == 1){
+        localStorage.setItem('preProcessing',1);
+        setFirstCheckBox(true);
+        setSecondCheckBox(false);
+        setThirdCheckBox(false);
+      } else if(value == 2){
+        localStorage.setItem('preProcessing',2);
+        setFirstCheckBox(false);
+        setSecondCheckBox(true);
+        setThirdCheckBox(false);
+      } else if(value == 3) {
+        localStorage.setItem('preProcessing',3);
+        setFirstCheckBox(false);
+        setSecondCheckBox(false);
+        setThirdCheckBox(true);
       }
-  
-      setChecked(newChecked);
     };
   
    
@@ -108,8 +134,8 @@ export default function PreProcessingAlgDialog (props) {
                          <div className='dataset-select-toolbox'>
                            <Checkbox
                              edge="end"
-                             onChange={handleToggle(value)}
-                             checked={checked.indexOf(value) !== -1}
+                             onChange={handleToggle(index)}
+                             checked={firstCheckBox}
                              inputProps={{ 'aria-labelledby': labelId }}
                            />
                            <Button variant="outlined" onClick={()=>{setDisplayMoreInfo(true); setAlgSelectedId(1)}}>Info</Button>
@@ -137,8 +163,8 @@ export default function PreProcessingAlgDialog (props) {
                          <div className='dataset-select-toolbox'>
                            <Checkbox
                              edge="end"
-                             onChange={handleToggle(value)}
-                             checked={checked.indexOf(value) !== -1}
+                             onChange={handleToggle(index)}
+                             checked={secondCheckBox}
                              inputProps={{ 'aria-labelledby': labelId }}
                            />
                            <Button variant="outlined" onClick={()=>{setDisplayMoreInfo(true); setAlgSelectedId(2)}}>Info</Button>
@@ -166,8 +192,8 @@ export default function PreProcessingAlgDialog (props) {
                            <div className='dataset-select-toolbox'>
                              <Checkbox
                                edge="end"
-                               onChange={handleToggle(value)}
-                               checked={checked.indexOf(value) !== -1}
+                               onChange={handleToggle(index)}
+                               checked={thirdCheckBox}
                                inputProps={{ 'aria-labelledby': labelId }}
                              />
                              <Button variant="outlined" onClick={()=>{setDisplayMoreInfo(true);  setAlgSelectedId(3)}}>Info</Button>

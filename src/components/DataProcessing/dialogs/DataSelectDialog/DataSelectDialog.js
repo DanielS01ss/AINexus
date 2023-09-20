@@ -25,6 +25,7 @@ import { faDatabase } from '@fortawesome/free-solid-svg-icons';
 import Paper from '@mui/material/Paper';
 import { Typography } from '@mui/material';
 import style from "./DataSelectDialog.css";
+import { getSelectedData,setSelectedData } from '../../utils/SelectedData';
 import DataSetInfo from './DataSetInfo';
 import axios from 'axios';
 
@@ -37,6 +38,12 @@ export default function DataSelectDialog(props) {
   const [isDataLoading, setIsDataLoading] = React.useState(true);
   const [datasetIdSelected, setDatasetIdSelected] = React.useState();
   const [selectedDataSetName, setSelectedDatasetName] = React.useState('');
+  const [checkBoxSelected, setCheckBoxSelected] = React.useState(false);
+  const [checkBoxSelected1,setCheckBoxSelected1] = React.useState(false);
+  const [checkBoxSelected2,setCheckBoxSelected2] = React.useState(false);
+  const [checkBoxSelected3,setCheckBoxSelected3] = React.useState(false);
+  const [preselectedOption, setPreselectedOption] = React.useState('0');
+  const [selectedDataSet, setSelectedDataSet] = React.useState({});
 
   const fetchAllData = () => {
     axios.get('http://localhost:8089/api/dataset/all-datasets').then((resp)=>{
@@ -49,6 +56,36 @@ export default function DataSelectDialog(props) {
     
   }
 
+  const handlePreSelectedOption = ()=>{
+    const storedItem = localStorage.getItem('selectedDataId');
+    setPreselectedOption(storedItem);
+
+    if(storedItem == '0'){
+      setCheckBoxSelected(true); 
+      setCheckBoxSelected1(false);
+      setCheckBoxSelected2(false);
+      setCheckBoxSelected3(false);
+    } else if(storedItem == '1'){
+      setCheckBoxSelected(false); 
+      setCheckBoxSelected1(true);
+      setCheckBoxSelected2(false);
+      setCheckBoxSelected3(false);
+      
+    } else if(storedItem == '2'){
+      setCheckBoxSelected(false); 
+      setCheckBoxSelected1(false);
+      setCheckBoxSelected2(true);
+      setCheckBoxSelected3(false);
+      
+    } else if(storedItem == '3'){
+      setCheckBoxSelected(false); 
+      setCheckBoxSelected1(false);
+      setCheckBoxSelected2(false);
+      setCheckBoxSelected3(true);     
+    }
+
+  }
+
 
   React.useEffect(()=>{
     if(datasetIdSelected){
@@ -58,23 +95,47 @@ export default function DataSelectDialog(props) {
 
   React.useEffect(()=>{
     fetchAllData();
+    handlePreSelectedOption();
   },[])
+
+  
 
   const handleDisplayDataSetInfo = (infoId) =>{
     setDatasetSearch(!dataSetSearch);
   }
 
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
-
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
-    }
-
-    setChecked(newChecked);
+  const handleToggle = (index) => () => {
+     if(index == 0){
+      localStorage.setItem('selectedDataId',0);
+      
+      setSelectedData(fetchedData[0]);
+      setCheckBoxSelected(true); 
+      setCheckBoxSelected1(false);
+      setCheckBoxSelected2(false);
+      setCheckBoxSelected3(false);
+     } else if (index == 1){
+      localStorage.setItem('selectedDataId',1);
+      setSelectedData(fetchedData[1]);
+      setCheckBoxSelected(false); 
+      setCheckBoxSelected1(true);
+      setCheckBoxSelected2(false);
+      setCheckBoxSelected3(false);
+     } else if (index == 2) {
+      localStorage.setItem('selectedDataId',2);
+      setSelectedData(fetchedData[2]);
+      setCheckBoxSelected(false); 
+      setCheckBoxSelected1(false);
+      setCheckBoxSelected2(true);
+      setCheckBoxSelected3(false);
+     } else if(index == 3){
+      localStorage.setItem('selectedDataId',3);
+      setSelectedData(fetchedData[3]);
+      setCheckBoxSelected(false); 
+      setCheckBoxSelected1(false);
+      setCheckBoxSelected2(false);
+      setCheckBoxSelected3(true);
+     }
+    
   };
 
 
@@ -150,7 +211,7 @@ export default function DataSelectDialog(props) {
                    {fetchedData.map((value,index) => {
                      const labelId = `checkbox-list-secondary-label-${value}`;
                     
-                     
+                    if(index == 0){
                       return (
                         <ListItem
                           key={index}
@@ -158,8 +219,8 @@ export default function DataSelectDialog(props) {
                             <div className='dataset-select-toolbox'>
                               <Checkbox
                                 edge="end"
-                                onChange={handleToggle(value)}
-                                checked={checked.indexOf(value) !== -1}
+                                onChange={handleToggle(index)}
+                                checked={checkBoxSelected}
                                 inputProps={{ 'aria-labelledby': labelId }}
                               />
                               <Button variant="outlined" onClick={()=>{ setDatasetIdSelected(value.id); setSelectedDatasetName(value.dataset_name); }}>Info</Button>
@@ -177,6 +238,86 @@ export default function DataSelectDialog(props) {
                         </ListItem>
                       );
                      
+                    } else if (index == 1) {
+                      return (
+                        <ListItem
+                          key={index}
+                          secondaryAction={
+                            <div className='dataset-select-toolbox'>
+                              <Checkbox
+                                edge="end"
+                                onChange={handleToggle(index)}
+                                checked={checkBoxSelected1}
+                                inputProps={{ 'aria-labelledby': labelId }}
+                              />
+                              <Button variant="outlined" onClick={()=>{ setDatasetIdSelected(value.id); setSelectedDatasetName(value.dataset_name); }}>Info</Button>
+                            </div>
+                          }
+                          disablePadding
+                        > 
+                          <ListItemButton>
+                            <ListItemAvatar>
+                              <p className='select-dialog-list'><FontAwesomeIcon icon={faDatabase}/></p> 
+                            </ListItemAvatar>
+                            <ListItemText  id={labelId}  disableTypography
+                            primary={<Typography variant="body2" style={{ color: '#FFFFFF',fontSize:"1.3rem" }}>{value.dataset_name}</Typography>} />
+                          </ListItemButton>
+                        </ListItem>
+                      );
+                    } else if (index == 2){
+                      return (
+                        <ListItem
+                          key={index}
+                          secondaryAction={
+                            <div className='dataset-select-toolbox'>
+                              <Checkbox
+                                edge="end"
+                                onChange={handleToggle(index)}
+                                checked={checkBoxSelected2}
+                                inputProps={{ 'aria-labelledby': labelId }}
+                              />
+                              <Button variant="outlined" onClick={()=>{ setDatasetIdSelected(value.id); setSelectedDatasetName(value.dataset_name); }}>Info</Button>
+                            </div>
+                          }
+                          disablePadding
+                        > 
+                          <ListItemButton>
+                            <ListItemAvatar>
+                              <p className='select-dialog-list'><FontAwesomeIcon icon={faDatabase}/></p> 
+                            </ListItemAvatar>
+                            <ListItemText  id={labelId}  disableTypography
+                            primary={<Typography variant="body2" style={{ color: '#FFFFFF',fontSize:"1.3rem" }}>{value.dataset_name}</Typography>} />
+                          </ListItemButton>
+                        </ListItem>
+                      );
+                    } else if(index == 3){
+                      return (
+                        <ListItem
+                          key={index}
+                          secondaryAction={
+                            <div className='dataset-select-toolbox'>
+                              <Checkbox
+                                edge="end"
+                                onChange={handleToggle(index)}
+                                checked={checkBoxSelected3}
+                                inputProps={{ 'aria-labelledby': labelId }}
+                              />
+                              <Button variant="outlined" onClick={()=>{ setDatasetIdSelected(value.id); setSelectedDatasetName(value.dataset_name); }}>Info</Button>
+                            </div>
+                          }
+                          disablePadding
+                        > 
+                          <ListItemButton>
+                            <ListItemAvatar>
+                              <p className='select-dialog-list'><FontAwesomeIcon icon={faDatabase}/></p> 
+                            </ListItemAvatar>
+                            <ListItemText  id={labelId}  disableTypography
+                            primary={<Typography variant="body2" style={{ color: '#FFFFFF',fontSize:"1.3rem" }}>{value.dataset_name}</Typography>} />
+                          </ListItemButton>
+                        </ListItem>
+                      );
+                    }
+                     
                     
                    })}
                  </List>
@@ -190,7 +331,7 @@ export default function DataSelectDialog(props) {
             </DialogContent>
             <DialogActions>
               <Button onClick={props.handleClose}>Close</Button>
-              <Button onClick={props.handleClose}>Apply</Button>
+              <Button onClick={()=>{props.handleClose(); props.selectDialog(fetchedData[0]);}}>Apply</Button>
             </DialogActions>
           
       </Dialog>

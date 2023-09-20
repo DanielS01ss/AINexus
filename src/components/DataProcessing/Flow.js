@@ -7,12 +7,10 @@ import Normalization from './custom_nodes/Normalization';
 import DataImputation from './custom_nodes/DataImputation';
 import ModelTraining from './custom_nodes/ModelTraining';
 
-function Flow() {
+function Flow(props) {
   const nodeTypes = useMemo(() => ({ dataSet: Dataset , featureSelection:FeatureSelection, normalization:Normalization, dataImputation:DataImputation, modelTraining:ModelTraining}), []);
 
-
-
-  const initialNodes = [
+  const [initialNodes,setInitialNodes] = React.useState([
     // {
     //   id: 'node-1',
     //   type: 'featureSelection',
@@ -44,7 +42,7 @@ function Flow() {
     //   position: { x: 1550, y: 500 },
     // }
 
-  ];
+  ]);
   const initialEdges = [  {
     id: 'e1-3',
     source: 'node-1',
@@ -52,6 +50,51 @@ function Flow() {
     label: 'This edge can only be updated from source',
     updatable: 'source',
   }];
+
+
+  const checkIsEmpty = (obj)=>{
+    return Object.entries(obj).length === 0;
+  }
+
+  const addNode = () => {
+    
+    let found = false;
+    for(let node of initialNodes){
+      if(node.id == 'node-2'){
+        found = true;
+      }
+    }
+
+    if(!found){
+      setInitialNodes((nodes) => {
+      
+        return [
+          ...nodes,
+          {
+            id: 'node-2',
+            type: 'dataSet',
+            data: { label: 'Dataset' },
+            position: { x: 450, y: 25 },
+           },
+        ];
+      });
+    }
+  
+  };
+
+  React.useEffect(()=>{
+    if(!checkIsEmpty(props.selectedData)){
+      appendNode();
+      
+    }
+  },[props.selectedData])
+
+
+  const appendNode = (nodeType) =>{
+    let wasFound = false;
+
+    addNode();
+  }
 
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
@@ -97,12 +140,12 @@ function Flow() {
       <div style={{ width: '96vw', height: '100vh' }}>
         <ReactFlow 
           style={reactFlowStyle}
-          nodes={nodes}
+          nodes={initialNodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          nodeTypes={nodeTypes}
+          nodeTypes={nodeTypes} 
         >
           <MiniMap nodeColor={nodeColor} nodeStrokeWidth={3} zoomable pannable style={{
             border: "1px solid black"
