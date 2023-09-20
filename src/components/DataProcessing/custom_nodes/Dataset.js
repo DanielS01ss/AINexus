@@ -13,14 +13,12 @@ export default memo(({ data, isConnectable }) => {
 
   const [allData,setAllData] = React.useState();
   const [publishDate, setPublishDate] = React.useState();
-  const onChange = useCallback((evt) => {
-    console.log(evt.target.value);
-  }, []);
+
 
   const fetchMoreInfo = ()=>{
   
     axios.get(`http://localhost:8089/api/dataset/dataset-info?id=${allData.id}`).then((resp)=>{
-      console.log(resp.data);
+      
     }).catch((err)=>{
       console.log(err);
     });
@@ -28,8 +26,7 @@ export default memo(({ data, isConnectable }) => {
 
   useEffect(()=>{
     if(allData){
-      // fetchMoreInfo();
-      console.log(allData);
+      // fetchMoreInfo()
     }
     
   },[allData])

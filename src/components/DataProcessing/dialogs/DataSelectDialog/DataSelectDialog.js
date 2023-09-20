@@ -155,7 +155,7 @@ export default function DataSelectDialog(props) {
     <div>
 
     <ThemeProvider theme={darkTheme}>
-      <Dialog open={props.open} onClose={props.handleClose} sx={{textAlign:"center", backgroundColor:""}} maxWidth="600" fullWidth="true" >
+      <Dialog open={props.open} onClose={props.handleClose} sx={{textAlign:"center", backgroundColor:""}} maxWidth="600" fullWidth={true} >
 
            <DialogTitle> Datasets </DialogTitle>
             <DialogContent>   
@@ -166,8 +166,7 @@ export default function DataSelectDialog(props) {
             <p className='loading-text'>Loading...</p>
           </div> 
       }
-          
-            
+        
              {
                 (dataSetSearch && !isDataLoading) &&
                 <Paper

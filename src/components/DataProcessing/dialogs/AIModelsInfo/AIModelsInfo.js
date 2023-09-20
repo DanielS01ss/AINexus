@@ -13,7 +13,7 @@ export default function AIModelsInfo(props) {
  
 
   React.useEffect(()=>{
-console.log(props.selectedModelId);
+
     if(props.selectedModelId == 1){
       setModelInfo('ResNet is a deep convolutional neural network architecture designed to address the vanishing gradient problem in very deep networks. It introduces skip connections or residual connections, allowing information to flow directly through layers, making it easier to train extremely deep networks. ResNet is widely used in image recognition tasks.');
     } else if(props.selectedModelId == 2){

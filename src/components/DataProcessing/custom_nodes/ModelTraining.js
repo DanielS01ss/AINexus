@@ -43,7 +43,7 @@ export default memo(({ data, isConnectable }) => {
         position={Position.Left}
         id="a"
         style={{padding:"10px",border:"4px solid #fff"}}
-        isConnectable={isConnectable}
+        isConnectable={true}
       />
       <div>
         <div className='dataset-node-header node-header-filter model-training-card-header'>

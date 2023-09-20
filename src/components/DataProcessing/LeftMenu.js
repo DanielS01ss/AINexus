@@ -136,7 +136,7 @@ export default function MiniDrawer(props) {
   }
 
   React.useEffect(()=>{
-    console.log(props);
+    
   },[])
 
   return (
